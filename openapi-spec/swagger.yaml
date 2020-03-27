@@ -1991,6 +1991,73 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
+  '/v1beta/{tenantId}/alertManagement/snmpUsers/snmpUser/{userId}':
+    parameters:
+      - $ref: '#/components/parameters/tenantId'
+      - $ref: '#/components/parameters/$userId'
+    get:
+      tags:
+        - SnmpUser
+      description: Get details about the snmp user
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    put:
+      tags:
+        - SnmpUser
+      description: Modify snmp user details
+      operationId: putSnmpUser
+      requestBody:
+        $ref: '#/components/requestBodies/HostUpdateSpec'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    delete:
+      tags:
+        - SnmpUser
+      description: Removes snmp user
+      responses:
+        '200':
+          description: OK
+          content: {}
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
   '/v1beta/{tenantId}/metrics':
     parameters:
       - $ref: '#/components/parameters/tenantId'
