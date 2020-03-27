@@ -1991,7 +1991,70 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1beta/{tenantId}/alertManagement/snmpUsers/snmpUser/{userId}':
+
+  '/v1beta/{tenantId}/alertManagement/snmpUser/snmpUsers':
+    parameters:
+      - $ref: '#/components/parameters/tenantId'
+    get:
+      tags:
+        - SnmpUser
+      description: Lists snmp user information.
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/sortDir'
+        - name: sortKey
+          in: query
+          description: Sorting key word, such as hostName, createdAt
+          schema:
+            type: string
+        - name: hostName
+          in: query
+          description: Host name
+          schema:
+            maxLength: 255
+            minLength: 1
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HostRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    post:
+      tags:
+        - Host
+      description: Creates host.
+      requestBody:
+        $ref: '#/components/requestBodies/HostCreateSpec'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HostRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+
+  '/v1beta/{tenantId}/alertManagement/snmpUser/snmpUsers/{userId}':
     parameters:
       - $ref: '#/components/parameters/tenantId'
       - $ref: '#/components/parameters/$userId'
