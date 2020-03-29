@@ -3768,8 +3768,6 @@ components:
               type: string
             deviceIpAddr:
               type: string
-            port:
-              type: string
 
     HostCreateSpec:
       required:
