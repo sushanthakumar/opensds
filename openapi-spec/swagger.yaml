@@ -1862,7 +1862,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/snmp/deviceTrapConfigs/deviceTrapConfig':
+  '/snmp/deviceTrapConfigs':
     parameters:
     get:
       tags:
@@ -1920,7 +1920,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus403'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/snmp/deviceTrapConfigs/deviceTrapConfig/{deviceTrapConfigId}':
+  '/snmp/deviceTrapConfigs/{deviceTrapConfigId}':
     parameters:
       - $ref: '#/components/parameters/deviceTrapConfigId'
     get:
@@ -1962,7 +1962,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/snmp/communities/community':
+  '/snmp/communities':
     parameters:
     get:
       tags:
@@ -2020,7 +2020,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus403'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/snmp/communities/community/{communityId}':
+  '/snmp/communities/{communityId}':
     parameters:
       - $ref: '#/components/parameters/communityId'
     get:
@@ -2062,7 +2062,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/snmp/usmUsers/usmUser':
+  '/snmp/usmUsers':
     parameters:
     get:
       tags:
@@ -2120,7 +2120,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus403'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-    '/snmp/usmUsers/usmUser/{userId}':
+  '/snmp/usmUsers/{userId}':
       parameters:
         - $ref: '#/components/parameters/userId'
       get:
@@ -2144,30 +2144,30 @@ paths:
             $ref: '#/components/responses/HTTPStatus404'
           '500':
             $ref: '#/components/responses/HTTPStatus500'
-    put:
-      tags:
-        - SnmpUsmUser
-      description: Modify SNMP V3 usm user details
-      operationId: putSnmpUsmUser
-      requestBody:
-        $ref: '#/components/requestBodies/SnmpUsmUserUpdateSpec'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SnmpUsmUserRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '404':
-          $ref: '#/components/responses/HTTPStatus404'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
+      put:
+        tags:
+          - SnmpUsmUser
+        description: Modify SNMP V3 usm user details
+        operationId: putSnmpUsmUser
+        requestBody:
+          $ref: '#/components/requestBodies/SnmpUsmUserUpdateSpec'
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/SnmpUsmUserRespSpec'
+          '400':
+            $ref: '#/components/responses/HTTPStatus400'
+          '401':
+            $ref: '#/components/responses/HTTPStatus401'
+          '403':
+            $ref: '#/components/responses/HTTPStatus403'
+          '404':
+            $ref: '#/components/responses/HTTPStatus404'
+          '500':
+            $ref: '#/components/responses/HTTPStatus500'
       delete:
         tags:
           - SnmpUsmUser
@@ -2718,6 +2718,16 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/SnmpCommunityCreateSpec'
+    SnmpUsmUserCreateSpec:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SnmpUsmUserCreateSpec'
+    SnmpUsmUserUpdateSpec:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SnmpUsmUserUpdateSpec'
     HostCreateSpec:
       content:
         application/json:
