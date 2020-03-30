@@ -2062,6 +2062,130 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
+  '/snmp/usmUsers/usmUser':
+    parameters:
+    get:
+      tags:
+        - SnmpUsmUser
+      description: Lists snmp V3 usm users
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/sortDir'
+        - name: sortKey
+          in: query
+          description: Sorting key word, such as communityName, createdAt
+          schema:
+            type: string
+        - name: deviceId
+          in: query
+          description: Device id for which usm users are configured
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SnmpUsmUserRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    post:
+      tags:
+        - SnmpUsmUser
+      description: Creates snmp V3 usm user.
+      requestBody:
+        $ref: '#/components/requestBodies/SnmpUsmUserCreateSpec'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnmpUsmUserRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    '/snmp/usmUsers/usmUser/{userId}':
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      get:
+        tags:
+          - SnmpUsmUser
+        description: Get details snmp v3 usm users configured for backend devices
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/SnmpUsmUserRespSpec'
+          '400':
+            $ref: '#/components/responses/HTTPStatus400'
+          '401':
+            $ref: '#/components/responses/HTTPStatus401'
+          '403':
+            $ref: '#/components/responses/HTTPStatus403'
+          '404':
+            $ref: '#/components/responses/HTTPStatus404'
+          '500':
+            $ref: '#/components/responses/HTTPStatus500'
+    put:
+      tags:
+        - SnmpUsmUser
+      description: Modify SNMP V3 usm user details
+      operationId: putSnmpUsmUser
+      requestBody:
+        $ref: '#/components/requestBodies/SnmpUsmUserUpdateSpec'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnmpUsmUserRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+      delete:
+        tags:
+          - SnmpUsmUser
+        description: Removes snmp v3 usm user configured for backend device
+        responses:
+          '200':
+            description: OK
+            content: {}
+          '400':
+            $ref: '#/components/responses/HTTPStatus400'
+          '401':
+            $ref: '#/components/responses/HTTPStatus401'
+          '403':
+            $ref: '#/components/responses/HTTPStatus403'
+          '404':
+            $ref: '#/components/responses/HTTPStatus404'
+          '500':
+            $ref: '#/components/responses/HTTPStatus500'
 
   '/v1beta/{tenantId}/host/hosts':
     parameters:
@@ -2178,135 +2302,6 @@ paths:
       tags:
       - Host
       description: Removes host
-      responses:
-        '200':
-          description: OK
-          content: {}
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '404':
-          $ref: '#/components/responses/HTTPStatus404'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-
-  '/v1beta/{tenantId}/snmpUser/snmpUsers':
-    parameters:
-      - $ref: '#/components/parameters/tenantId'
-    get:
-      tags:
-        - SnmpUser
-      description: Lists snmp user information.
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/sortDir'
-        - name: sortKey
-          in: query
-          description: Sorting key word, such as hostName, createdAt
-          schema:
-            type: string
-        - name: deviceId
-          in: query
-          description: Device Id
-          schema:
-            maxLength: 255
-            minLength: 1
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/HostRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-    post:
-      tags:
-        - SnmpUser
-      description: Creates Snmp User.
-      requestBody:
-        $ref: '#/components/requestBodies/HostCreateSpec'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HostRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-  '/v1beta/{tenantId}/snmpUser/snmpUsers/{userId}':
-    parameters:
-      - $ref: '#/components/parameters/tenantId'
-      - $ref: '#/components/parameters/$userId'
-    get:
-      tags:
-        - SnmpUser
-      description: Get details about the snmp user
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HostRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '404':
-          $ref: '#/components/responses/HTTPStatus404'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-    put:
-      tags:
-        - SnmpUser
-      description: Modify snmp user details
-      operationId: putSnmpUser
-      requestBody:
-        $ref: '#/components/requestBodies/HostUpdateSpec'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HostRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '404':
-          $ref: '#/components/responses/HTTPStatus404'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-    delete:
-      tags:
-        - SnmpUser
-      description: Removes snmp user
       responses:
         '200':
           description: OK
@@ -3878,20 +3873,20 @@ components:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
-          properties:
-            version:
-              type: string
-              example: SNMPV3
-              enum:
-                - SNMPV2c
-                - SNMPV3
-            userInfo:
-              type: string
-            deviceIpAddr:
-              type: string
+        properties:
+          version:
+            type: string
+            example: SNMPV3
+            enum:
+              - SNMPV2c
+              - SNMPV3
+          userInfo:
+            type: string
+          deviceIpAddr:
+            type: string
 
     SnmpCommunityCreateSpec:
-      description: Snmp community configuration request attributes.
+      description: Snmp community configuration request attributes. DeviceId and communitystr together for the key here
       required:
         - deviceId
         - communityStr
@@ -3903,30 +3898,134 @@ components:
         communityStr:
           type: string
           description: Community string
-        accessRight:
-          type: string
-          example: RW
-          enum:
-            - RO
-            - RW
-          description: Access right for the community
 
     SnmpCommunityRespSpec:
       description: Response for snmp community configuration.
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
-          properties:
-            deviceId:
-              type: string
-            communityStr:
-              type: string
-            accessRight:
-              type: string
-              example: RW
-              enum:
-                - RO
-                - RW
+        properties:
+          deviceId:
+            type: string
+          communityStr:
+            type: string
+
+    SnmpUsmUserCreateSpec:
+      description: SNMP v3 usm user request attributes. DeviceId and username together for the key here.
+      required:
+        - deviceId
+        - username
+      type: object
+      properties:
+        deviceId:
+          type: string
+          description: Device id for which this community is getting configured
+        username:
+          type: string
+          description: v3 usm username
+        engineId:
+          type: string
+          description: EngineId of device
+        securityLevel:
+          type: string
+          description: Security level
+          example: noAuthnoPriv
+          enum:
+            - noAuthnoPriv
+            - authNoPriv
+            - authPriv
+        authProtocol:
+          type: string
+          description: Authentication protocol supported
+          example: MD5
+          enum:
+            - MD5
+            - SHA
+        authPasswd:
+          type: string
+          description: Authentication password
+        privProtocol:
+          type: string
+          description: Privacy protocol supported
+          example: DES
+          enum:
+            - DES
+            - AES
+        privPasswd:
+          type: string
+          description: Privacy password
+
+    SnmpUsmUserUpdateSpec:
+      description: SNMP v3 usm user config update. DeviceId and username together for the key here.
+      type: object
+      properties:
+        engineId:
+          type: string
+          description: EngineId of device
+        securityLevel:
+          type: string
+          description: Security level
+          example: noAuthnoPriv
+          enum:
+            - noAuthnoPriv
+            - authNoPriv
+            - authPriv
+        authProtocol:
+          type: string
+          description: Authentication protocol supported
+          example: MD5
+          enum:
+            - MD5
+            - SHA
+        authPasswd:
+          type: string
+          description: Authentication password
+        privProtocol:
+          type: string
+          description: Privacy protocol supported
+          example: DES
+          enum:
+            - DES
+            - AES
+        privPasswd:
+          type: string
+          description: Privacy password
+
+    SnmpUsmUserRespSpec:
+      description: Response for snmp v3 usm user configuration.
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+        properties:
+          deviceId:
+            type: string
+          username:
+            type: string
+          engineId:
+            type: string
+          securityLevel:
+            type: string
+            example: noAuthnoPriv
+            enum:
+              - noAuthnoPriv
+              - authNoPriv
+              - authPriv
+          authProtocol:
+            type: string
+            example: MD5
+            enum:
+              - MD5
+              - SHA
+          authPasswd:
+            type: string
+          privProtocol:
+            type: string
+            example: DES
+            enum:
+              - DES
+              - AES
+          privPasswd:
+            type: string
     HostCreateSpec:
       required:
       - accessMode
