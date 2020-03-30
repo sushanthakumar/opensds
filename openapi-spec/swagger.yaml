@@ -471,6 +471,19 @@ components:
           format: date-time
           example: '2017-07-10T14:36:58.014Z'
           readOnly: true
+    ErrorSpec:
+      description: >-
+        Detailed HTTP error response, which consists of a HTTP status code, and
+        a custom error message unique for each failure case.
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
     SnmpDeviceTrapConfigCreateSpec:
       description: Snmp device trap configuration request attributes.
       required:
