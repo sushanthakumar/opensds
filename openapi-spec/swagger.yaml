@@ -1862,6 +1862,230 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
+  '/snmp/communities':
+    parameters:
+    get:
+      tags:
+        - SnmpCommunity
+      description: Lists snmp v2c community configurations
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/sortDir'
+        - name: sortKey
+          in: query
+          description: Sorting key word, such as communityName, createdAt
+          schema:
+            type: string
+        - name: deviceId
+          in: query
+          description: Device id for which communities are configured
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SnmpCommunityRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    post:
+      tags:
+        - SnmpCommunity
+      description: Creates snmp community configuration. DeviceId and communitystr combination should be unique
+      requestBody:
+        $ref: '#/components/requestBodies/SnmpCommunityCreateSpec'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnmpCommunityRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+  '/snmp/communities/{communityId}':
+    parameters:
+      - $ref: '#/components/parameters/communityId'
+    get:
+      tags:
+        - SnmpCommunity
+      description: Get details snmp communities configured for backend devices
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnmpCommunityRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    delete:
+      tags:
+        - SnmpCommunity
+      description: Removes snmp community configured for backend device
+      responses:
+        '200':
+          description: OK
+          content: {}
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+  '/snmp/usmUsers':
+    parameters:
+    get:
+      tags:
+        - SnmpUsmUser
+      description: Lists snmp V3 usm users.
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/sortDir'
+        - name: sortKey
+          in: query
+          description: Sorting key word, such as communityName, createdAt
+          schema:
+            type: string
+        - name: deviceId
+          in: query
+          description: Device id for which usm users are configured
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SnmpUsmUserRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    post:
+      tags:
+        - SnmpUsmUser
+      description: Creates snmp V3 usm user. DeviceId and username combination should be unique
+      requestBody:
+        $ref: '#/components/requestBodies/SnmpUsmUserCreateSpec'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnmpUsmUserRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+  '/snmp/usmUsers/{userId}':
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      get:
+        tags:
+          - SnmpUsmUser
+        description: Get details snmp v3 usm users configured for backend devices
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/SnmpUsmUserRespSpec'
+          '400':
+            $ref: '#/components/responses/HTTPStatus400'
+          '401':
+            $ref: '#/components/responses/HTTPStatus401'
+          '403':
+            $ref: '#/components/responses/HTTPStatus403'
+          '404':
+            $ref: '#/components/responses/HTTPStatus404'
+          '500':
+            $ref: '#/components/responses/HTTPStatus500'
+      put:
+        tags:
+          - SnmpUsmUser
+        description: Modify SNMP V3 usm user details
+        operationId: putSnmpUsmUser
+        requestBody:
+          $ref: '#/components/requestBodies/SnmpUsmUserUpdateSpec'
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/SnmpUsmUserRespSpec'
+          '400':
+            $ref: '#/components/responses/HTTPStatus400'
+          '401':
+            $ref: '#/components/responses/HTTPStatus401'
+          '403':
+            $ref: '#/components/responses/HTTPStatus403'
+          '404':
+            $ref: '#/components/responses/HTTPStatus404'
+          '500':
+            $ref: '#/components/responses/HTTPStatus500'
+      delete:
+        tags:
+          - SnmpUsmUser
+        description: Removes snmp v3 usm user configured for backend device
+        responses:
+          '200':
+            description: OK
+            content: {}
+          '400':
+            $ref: '#/components/responses/HTTPStatus400'
+          '401':
+            $ref: '#/components/responses/HTTPStatus401'
+          '403':
+            $ref: '#/components/responses/HTTPStatus403'
+          '404':
+            $ref: '#/components/responses/HTTPStatus404'
+          '500':
+            $ref: '#/components/responses/HTTPStatus500'
   '/snmp/deviceTrapConfigs':
     parameters:
     get:
@@ -1962,231 +2186,6 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/snmp/communities':
-    parameters:
-    get:
-      tags:
-        - SnmpCommunity
-      description: Lists snmp v2c community configurations
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/sortDir'
-        - name: sortKey
-          in: query
-          description: Sorting key word, such as communityName, createdAt
-          schema:
-            type: string
-        - name: deviceId
-          in: query
-          description: Device id for which communities are configured
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SnmpCommunityRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-    post:
-      tags:
-        - SnmpCommunity
-      description: Creates snmp community configuration.
-      requestBody:
-        $ref: '#/components/requestBodies/SnmpCommunityCreateSpec'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SnmpCommunityRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-  '/snmp/communities/{communityId}':
-    parameters:
-      - $ref: '#/components/parameters/communityId'
-    get:
-      tags:
-        - SnmpCommunity
-      description: Get details snmp communities configured for backend devices
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SnmpCommunityRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '404':
-          $ref: '#/components/responses/HTTPStatus404'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-    delete:
-      tags:
-        - SnmpCommunity
-      description: Removes snmp community configured for backend device
-      responses:
-        '200':
-          description: OK
-          content: {}
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '404':
-          $ref: '#/components/responses/HTTPStatus404'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-  '/snmp/usmUsers':
-    parameters:
-    get:
-      tags:
-        - SnmpUsmUser
-      description: Lists snmp V3 usm users
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/sortDir'
-        - name: sortKey
-          in: query
-          description: Sorting key word, such as communityName, createdAt
-          schema:
-            type: string
-        - name: deviceId
-          in: query
-          description: Device id for which usm users are configured
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SnmpUsmUserRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-    post:
-      tags:
-        - SnmpUsmUser
-      description: Creates snmp V3 usm user.
-      requestBody:
-        $ref: '#/components/requestBodies/SnmpUsmUserCreateSpec'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SnmpUsmUserRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-  '/snmp/usmUsers/{userId}':
-      parameters:
-        - $ref: '#/components/parameters/userId'
-      get:
-        tags:
-          - SnmpUsmUser
-        description: Get details snmp v3 usm users configured for backend devices
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/SnmpUsmUserRespSpec'
-          '400':
-            $ref: '#/components/responses/HTTPStatus400'
-          '401':
-            $ref: '#/components/responses/HTTPStatus401'
-          '403':
-            $ref: '#/components/responses/HTTPStatus403'
-          '404':
-            $ref: '#/components/responses/HTTPStatus404'
-          '500':
-            $ref: '#/components/responses/HTTPStatus500'
-      put:
-        tags:
-          - SnmpUsmUser
-        description: Modify SNMP V3 usm user details
-        operationId: putSnmpUsmUser
-        requestBody:
-          $ref: '#/components/requestBodies/SnmpUsmUserUpdateSpec'
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/SnmpUsmUserRespSpec'
-          '400':
-            $ref: '#/components/responses/HTTPStatus400'
-          '401':
-            $ref: '#/components/responses/HTTPStatus401'
-          '403':
-            $ref: '#/components/responses/HTTPStatus403'
-          '404':
-            $ref: '#/components/responses/HTTPStatus404'
-          '500':
-            $ref: '#/components/responses/HTTPStatus500'
-      delete:
-        tags:
-          - SnmpUsmUser
-        description: Removes snmp v3 usm user configured for backend device
-        responses:
-          '200':
-            description: OK
-            content: {}
-          '400':
-            $ref: '#/components/responses/HTTPStatus400'
-          '401':
-            $ref: '#/components/responses/HTTPStatus401'
-          '403':
-            $ref: '#/components/responses/HTTPStatus403'
-          '404':
-            $ref: '#/components/responses/HTTPStatus404'
-          '500':
-            $ref: '#/components/responses/HTTPStatus500'
-
   '/v1beta/{tenantId}/host/hosts':
     parameters:
       - $ref: '#/components/parameters/tenantId'
@@ -2568,6 +2567,13 @@ components:
       in: path
       required: true
       description: The generated Id of the snmp community configuration.
+      schema:
+        type: string
+    userId:
+      name: userId
+      in: path
+      required: true
+      description: The generated Id of the snmp usm user configuration.
       schema:
         type: string
     limit:
@@ -3896,7 +3902,7 @@ components:
               type: string
 
     SnmpCommunityCreateSpec:
-      description: Snmp community configuration request attributes. DeviceId and communitystr together for the key here
+      description: Snmp community configuration request attributes.
       required:
         - deviceId
         - communityStr
@@ -3921,7 +3927,7 @@ components:
               type: string
 
     SnmpUsmUserCreateSpec:
-      description: SNMP v3 usm user request attributes. DeviceId and username together for the key here.
+      description: SNMP v3 usm user request attributes.
       required:
         - deviceId
         - username
