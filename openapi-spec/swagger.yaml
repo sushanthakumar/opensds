@@ -2713,6 +2713,16 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/VolumeAttachmentUpdateSpec'
+    SnmpDeviceTrapConfigCreateSpec:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SnmpDeviceTrapConfigCreateSpec'
+    SnmpCommunityCreateSpec:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SnmpCommunityCreateSpec'
     HostCreateSpec:
       content:
         application/json:
@@ -3869,8 +3879,6 @@ components:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
           properties:
-            tenantId:
-              type: string
             version:
               type: string
               example: SNMPV3
@@ -3882,6 +3890,43 @@ components:
             deviceIpAddr:
               type: string
 
+    SnmpCommunityCreateSpec:
+      description: Snmp community configuration request attributes.
+      required:
+        - deviceId
+        - communityStr
+      type: object
+      properties:
+        deviceId:
+          type: string
+          description: Device id for which this community is getting configured
+        communityStr:
+          type: string
+          description: Community string
+        accessRight:
+          type: string
+          example: RW
+          enum:
+            - RO
+            - RW
+          description: Access right for the community
+
+    SnmpCommunityRespSpec:
+      description: Response for snmp community configuration.
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            deviceId:
+              type: string
+            communityStr:
+              type: string
+            accessRight:
+              type: string
+              example: RW
+              enum:
+                - RO
+                - RW
     HostCreateSpec:
       required:
       - accessMode
