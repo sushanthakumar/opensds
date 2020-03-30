@@ -1862,7 +1862,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1beta/{tenantId}/snmpDeviceTrapConfig/snmpDeviceTrapConfigs':
+  '/v1beta/{tenantId}/snmpDeviceTrapConfigs/snmpDeviceTrapConfig':
     parameters:
       - $ref: '#/components/parameters/tenantId'
     get:
@@ -1921,7 +1921,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus403'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1beta/{tenantId}/snmpDeviceTrapConfig/snmpDeviceTrapConfigs/{deviceTrapConfigId}':
+  '/v1beta/{tenantId}/snmpDeviceTrapConfigs/snmpDeviceTrapConfig/{deviceTrapConfigId}':
     parameters:
       - $ref: '#/components/parameters/tenantId'
       - $ref: '#/components/parameters/deviceTrapConfigId'
@@ -3750,7 +3750,7 @@ components:
           pattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
           example: 8.8.8.8
 
-    SnmpDeviceTrapConfigRespSpec:
+    SnmpDeviceTrapConfigRespSpec: snmp
       description: Response for snmp device trap configuration.
       allOf:
         - $ref: '#/components/schemas/BaseModel'
