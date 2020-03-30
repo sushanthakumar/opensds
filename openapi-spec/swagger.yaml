@@ -3873,17 +3873,17 @@ components:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
-        properties:
-          version:
-            type: string
-            example: SNMPV3
-            enum:
-              - SNMPV2c
-              - SNMPV3
-          userInfo:
-            type: string
-          deviceIpAddr:
-            type: string
+          properties:
+            version:
+              type: string
+              example: SNMPV3
+              enum:
+                - SNMPV2c
+                - SNMPV3
+            userInfo:
+              type: string
+            deviceIpAddr:
+              type: string
 
     SnmpCommunityCreateSpec:
       description: Snmp community configuration request attributes. DeviceId and communitystr together for the key here
@@ -3904,11 +3904,11 @@ components:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
-        properties:
-          deviceId:
-            type: string
-          communityStr:
-            type: string
+          properties:
+            deviceId:
+              type: string
+            communityStr:
+              type: string
 
     SnmpUsmUserCreateSpec:
       description: SNMP v3 usm user request attributes. DeviceId and username together for the key here.
@@ -3996,36 +3996,36 @@ components:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
-        properties:
-          deviceId:
-            type: string
-          username:
-            type: string
-          engineId:
-            type: string
-          securityLevel:
-            type: string
-            example: noAuthnoPriv
-            enum:
-              - noAuthnoPriv
-              - authNoPriv
-              - authPriv
-          authProtocol:
-            type: string
-            example: MD5
-            enum:
-              - MD5
-              - SHA
-          authPasswd:
-            type: string
-          privProtocol:
-            type: string
-            example: DES
-            enum:
-              - DES
-              - AES
-          privPasswd:
-            type: string
+          properties:
+            deviceId:
+              type: string
+            username:
+              type: string
+            engineId:
+              type: string
+            securityLevel:
+              type: string
+              example: noAuthnoPriv
+              enum:
+                - noAuthnoPriv
+                - authNoPriv
+                - authPriv
+            authProtocol:
+              type: string
+              example: MD5
+              enum:
+                - MD5
+                - SHA
+            authPasswd:
+              type: string
+            privProtocol:
+              type: string
+              example: DES
+              enum:
+                - DES
+                - AES
+            privPasswd:
+              type: string
     HostCreateSpec:
       required:
       - accessMode
