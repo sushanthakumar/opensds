@@ -589,6 +589,7 @@ components:
           description: Privacy protocol supported
           example: DES
           enum:
+            - 3DES
             - DES
             - AES
         privPasswd:
