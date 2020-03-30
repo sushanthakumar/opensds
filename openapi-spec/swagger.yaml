@@ -1862,9 +1862,8 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1beta/{tenantId}/snmpDeviceTrapConfigs/snmpDeviceTrapConfig':
+  '/snmp/deviceTrapConfigs/deviceTrapConfig':
     parameters:
-      - $ref: '#/components/parameters/tenantId'
     get:
       tags:
         - SnmpDeviceTrapConfig
@@ -1921,9 +1920,8 @@ paths:
           $ref: '#/components/responses/HTTPStatus403'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1beta/{tenantId}/snmpDeviceTrapConfigs/snmpDeviceTrapConfig/{deviceTrapConfigId}':
+  '/snmp/deviceTrapConfigs/deviceTrapConfig/{deviceTrapConfigId}':
     parameters:
-      - $ref: '#/components/parameters/tenantId'
       - $ref: '#/components/parameters/deviceTrapConfigId'
     get:
       tags:
@@ -1964,6 +1962,107 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
+  '/snmp/communities/community':
+    parameters:
+    get:
+      tags:
+        - SnmpCommunity
+      description: Lists snmp v2c community configurations
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/sortDir'
+        - name: sortKey
+          in: query
+          description: Sorting key word, such as communityName, createdAt
+          schema:
+            type: string
+        - name: deviceId
+          in: query
+          description: Device id for which communities are configured
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SnmpCommunityRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    post:
+      tags:
+        - SnmpCommunity
+      description: Creates snmp community configuration.
+      requestBody:
+        $ref: '#/components/requestBodies/SnmpCommunityCreateSpec'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnmpCommunityRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+  '/snmp/communities/community/{communityId}':
+    parameters:
+      - $ref: '#/components/parameters/communityId'
+    get:
+      tags:
+        - SnmpCommunity
+      description: Get details snmp communities configured for backend devices
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnmpCommunityRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    delete:
+      tags:
+        - SnmpCommunity
+      description: Removes snmp community configured for backend device
+      responses:
+        '200':
+          description: OK
+          content: {}
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+
   '/v1beta/{tenantId}/host/hosts':
     parameters:
       - $ref: '#/components/parameters/tenantId'
@@ -2460,6 +2559,20 @@ components:
       in: path
       required: true
       description: The UUID of the host.
+      schema:
+        type: string
+    deviceTrapConfigId:
+      name: deviceTrapConfigId
+      in: path
+      required: true
+      description: The generated Id of the device trap configuration.
+      schema:
+        type: string
+    communityId:
+      name: communityId
+      in: path
+      required: true
+      description: The generated Id of the snmp community configuration.
       schema:
         type: string
     limit:
