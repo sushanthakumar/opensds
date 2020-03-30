@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  version: "v1beta"
-  title: OpenSDS Controller API
-  description: OpenSDS Controller API to manage mutliple backend storages.
+  version: "1.0.0"
+  title: Alert management API
+  description: This is a sample API for Alert management
   termsOfService: 'https://www.linuxfoundation.org/terms'
   contact:
     name: OpenSDS Support
