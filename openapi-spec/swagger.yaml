@@ -17,8 +17,8 @@ paths:
       - $ref: '#/components/parameters/storage-system-id'
     get:
       tags:
-        - AlertSourceInfo
-      description: Lists snmp alert source informarion. It contains community string(incase of v2c), usm user details(incase of v3) and server ip and port to configure alert source device
+        - SnmpAlertSource
+      description: Lists snmp alert sources configured. Each entry contains community string(incase of v2c), usm user details(incase of v3) and server ip and port to configure alert source device
       parameters:
         - $ref: '#/components/parameters/limit'
         - $ref: '#/components/parameters/offset'
@@ -47,7 +47,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus500'
     post:
       tags:
-        - AlertSourceInfo
+        - SnmpAlertSource
       description: Creates snmp alert source entry. It contains community string(incase of v2c), usm user details(incase of v3) and server ip and port to configure alert source device
       requestBody:
         $ref: '#/components/requestBodies/SnmpAlertSourceCreateSpec'
@@ -72,7 +72,7 @@ paths:
       - $ref: '#/components/parameters/alertsourceId'
     get:
       tags:
-        - AlertSourceInfo
+        - SnmpAlertSource
       description: Get details snmp alert source information configured on behalf of backend devices
       responses:
         '200':
@@ -91,33 +91,33 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-      put:
-        tags:
-          - AlertSourceInfo
-        description: Modify snmp alert source information configured on behalf of backend devices
-        operationId: putAlertSourceInfo
-        requestBody:
-          $ref: '#/components/requestBodies/SnmpAlertSourceUpdateSpec'
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
-          '400':
-            $ref: '#/components/responses/HTTPStatus400'
-          '401':
-            $ref: '#/components/responses/HTTPStatus401'
-          '403':
-            $ref: '#/components/responses/HTTPStatus403'
-          '404':
-            $ref: '#/components/responses/HTTPStatus404'
-          '500':
-            $ref: '#/components/responses/HTTPStatus500'
+    put:
+      tags:
+        - SnmpAlertSource
+      description: Modify snmp alert source information configured on behalf of backend devices
+      operationId: putAlertSourceInfo
+      requestBody:
+        $ref: '#/components/requestBodies/SnmpAlertSourceUpdateSpec'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
     delete:
       tags:
-        - AlertSourceInfo
+        - SnmpAlertSource
       description: Removes snmp alert source information configured on behalf of backend devices
       responses:
         '200':
@@ -133,65 +133,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1/storage-systems/{storage_id}/snmp-alert':
-    parameters:
-    get:
-      tags:
-        - SnmpUserinfo
-      description: Lists snmp user informarion. Incase of V2c, it contains community info and for v3, it contains usm user info
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/sortDir'
-        - name: sortKey
-          in: query
-          description: Sorting key word, such as communityName, createdAt
-          schema:
-            type: string
-        - name: storage_id
-          in: query
-          description: Device id for which snmp user configuration is done
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SnmpCommunityRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-    post:
-      tags:
-        - SnmpCommunity
-      description: Creates snmp community configuration. DeviceId and communitystr combination should be unique
-      requestBody:
-        $ref: '#/components/requestBodies/SnmpCommunityCreateSpec'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SnmpCommunityRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-  '//v1/storage-systems/{storage-system-id}/snmp-alert/{alertSequenceNum}':
+  '/v1/storage-systems/{storage-system-id}/snmp-alert/{alertSequenceNum}':
     parameters:
       - $ref: '#/components/parameters/storage-system-id'
       - $ref: '#/components/parameters/alertSequenceNum'
@@ -234,8 +176,6 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-security:
-  - basicAuth: []
 externalDocs:
   description: The offical OpenSDS Controller API specification
   url: 'https://github.com/opensds/opensds'
@@ -244,14 +184,6 @@ servers:
   - url: 'http://localhost:50040/'
 components:
   parameters:
-    apiVersion:
-      name: apiVersion
-      in: path
-      required: true
-      description: API version string
-      schema:
-        type: string
-        pattern: 'v([1-9][0-9]*)((alpha)([1-9][0-9]*)|(beta)([1-9][0-9]*))?'
     storage-system-id:
       name: storage-system-id
       in: path
@@ -475,6 +407,7 @@ components:
         privPasswd:
           type: string
           description: Privacy password
+
     SnmpAlertSourceRespSpec:
       description: Response for snmp alert source configuration.
       allOf:
