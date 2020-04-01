@@ -133,7 +133,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1/storage-systems/{storage-system-id}/snmp-alert/{alertSequenceNum}':
+  '/v1/storage-systems/{storage-system-id}/snmp-alerts/{alertSequenceNum}':
     parameters:
       - $ref: '#/components/parameters/storage-system-id'
       - $ref: '#/components/parameters/alertSequenceNum'
