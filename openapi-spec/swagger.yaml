@@ -1,31 +1,479 @@
 openapi: 3.0.0
 info:
-  version: "1.0.0"
-  title: Alert management API
-  description: This is a sample API for Alert management
-  termsOfService: 'https://www.linuxfoundation.org/terms'
+  title: Infrastructure Management API
+  description: This is a sample API for Infrastructure managemnet
   contact:
-    name: OpenSDS Support
-    url: 'https://opensds.slack.com'
-    email: support@opensds.io
+    email: najmuct@gmail.com
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 1.0.0
+servers:
+  - url: >-
+      https://virtserver.swaggerhub.com/Pravin_Test_Hotpot/RetreivalManager/1.0.0
+    description: SwaggerHub API Auto Mocking
+  - url: 'https://virtserver.swaggerhub.com/NajmudheenCT/IRM/1.0.0'
+    description: SwaggerHub API Auto Mocking
+tags:
+  - name: Admins
+    description: Secured Admin-only calls
 paths:
-  '/v1/storage-systems/{storage-system-id}/snmp-alertsources':
-    parameters:
-      - $ref: '#/components/parameters/storage-system-id'
+  /v1/storage-systems:
     get:
       tags:
-        - SnmpAlertSource
-      description: Lists snmp alert sources configured. Each entry contains community string(incase of v2c), usm user details(incase of v3) and server ip and port to configure alert source device
+        - Admins
+      description: get details of all registered storage backends
+      operationId: getStorageBackends
       parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/sortDir'
+        - name: limit
+          in: query
+          description: Number of query results on multiple pages
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: Start position of the pagination query
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: sortDir
+          in: query
+          description: Ascending or descending
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
         - name: sortKey
           in: query
-          description: Sorting key word, such as communityName, createdAt
+          description: 'Sorting key word, such as name, createdAt'
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: vendor
+          in: query
+          description: vendor name to filter
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: model
+          in: query
+          description: model to filter
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Storage backend list available
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StorageBackendResponse'
+        '401':
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '500':
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+    post:
+      tags:
+        - Admins
+      description: >-
+        It is fot registering storage backend. Adds storage Backend to the
+        Ifrasturcture Manager
+      operationId: addStorageBackends
+      requestBody:
+        description: Inventory item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StorageBackendRegistry'
+      responses:
+        '200':
+          description: 'Accepted, items added to the infrastructure management'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageBackendResponse'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '401':
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '409':
+          description: An item already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '500':
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+  '/v1/storage-systems/{storage-system-id}':
+    get:
+      tags:
+        - Admins
+      description: get details of a registerd backend
+      operationId: getStorageBackendbyID
+      parameters:
+        - name: storage-system-id
+          in: path
+          description: The ID created for a backend .
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of query results on multiple pages
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: Start position of the pagination query
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: sortDir
+          in: query
+          description: Ascending or descending
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: sortKey
+          in: query
+          description: 'Sorting key word, such as name, createdAt'
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Storage backend list available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageBackendResponse'
+        '401':
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '500':
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+    put:
+      tags:
+        - Admins
+      description: update details of a storage system registry
+      operationId: updateStorageBackendbyID
+      parameters:
+        - name: storage-system-id
+          in: path
+          description: The ID created for a backend .
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StorageBackendRegistryUpdate'
+      responses:
+        '200':
+          description: Storage backend list available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageBackendRegistry'
+        '400':
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '401':
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '500':
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+    delete:
+      tags:
+        - Admins
+      description: un regester an already registered storage backend
+      parameters:
+        - name: storage-system-id
+          in: path
+          description: The ID created for a backend .
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Accepted
+        '401':
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '500':
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+  /v1/storage-systems/connection-parameters:
+    get:
+      tags:
+        - Admins
+      description: get key names of extended parameters required for registering a backend
+      operationId: getStorageBackendConnectionParams
+      parameters:
+        - name: limit
+          in: query
+          description: Number of query results on multiple pages
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: Start position of the pagination query
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: sortDir
+          in: query
+          description: Ascending or descending
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: sortKey
+          in: query
+          description: 'Sorting key word, such as name, createdAt'
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: vendor
+          in: query
+          description: vendor name to filter
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: model
+          in: query
+          description: model to filter
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Storage backend extended connection params available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageBackendExtendedConnectionInfo'
+        '401':
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '500':
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+  /v1/storage-systems/pools:
+    get:
+      tags:
+        - Pool
+      description: Lists information for all block storage pool.
+      parameters:
+        - name: limit
+          in: query
+          description: Number of query results on multiple pages
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: Start position of the pagination query
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: sortDir
+          in: query
+          description: Ascending or descending
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: sortKey
+          in: query
+          description: 'Sorting key word, such as name, createdAt'
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: The pool name
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: poolId
+          in: query
+          description: The UUID of pool
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: The pool status
+          required: false
+          style: form
+          explode: true
           schema:
             type: string
       responses:
@@ -36,183 +484,771 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
+                  $ref: '#/components/schemas/StoragePoolSpec'
         '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
-    post:
-      tags:
-        - SnmpAlertSource
-      description: Creates snmp alert source entry. It contains community string(incase of v2c), usm user details(incase of v3) and server ip and port to configure alert source device
-      requestBody:
-        $ref: '#/components/requestBodies/SnmpAlertSourceCreateSpec'
-      responses:
-        '200':
-          description: OK
+          description: NotAuthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
+                $ref: '#/components/schemas/ErrorSpec'
         '403':
-          $ref: '#/components/responses/HTTPStatus403'
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
         '500':
-          $ref: '#/components/responses/HTTPStatus500'
-  '/v1/storage-systems/{storage-system-id}/snmp-alertsources/{alertsourceId}':
-    parameters:
-      - $ref: '#/components/parameters/storage-system-id'
-      - $ref: '#/components/parameters/alertsourceId'
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+  '/v1/storage-systems/{storage-system-id}/pools':
     get:
       tags:
-        - SnmpAlertSource
-      description: Get details snmp alert source information configured on behalf of backend devices
+        - Pool
+      description: Lists information for all pools of storagebackend.
+      parameters:
+        - name: storage-system-id
+          in: path
+          description: The ID created for a backend .
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of query results on multiple pages
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: Start position of the pagination query
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: sortDir
+          in: query
+          description: Ascending or descending
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: sortKey
+          in: query
+          description: 'Sorting key word, such as name, createdAt'
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: The pool name
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: The pool status
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
+                type: array
+                items:
+                  $ref: '#/components/schemas/StoragePoolSpec'
         '401':
-          $ref: '#/components/responses/HTTPStatus401'
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
         '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '404':
-          $ref: '#/components/responses/HTTPStatus404'
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
         '500':
-          $ref: '#/components/responses/HTTPStatus500'
-    put:
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+  '/v1/storage-systems/{storage-system-id}/pools/{poolId}':
+    get:
       tags:
-        - SnmpAlertSource
-      description: Modify snmp alert source information configured on behalf of backend devices
-      operationId: putAlertSourceInfo
-      requestBody:
-        $ref: '#/components/requestBodies/SnmpAlertSourceUpdateSpec'
+        - Pool
+      description: Gets storage pool detail by pool ID.
+      parameters:
+        - name: storage-system-id
+          in: path
+          description: The ID created for a backend .
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: poolId
+          in: path
+          description: The UUID of the storage pool.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
+                $ref: '#/components/schemas/StoragePoolSpec'
         '401':
-          $ref: '#/components/responses/HTTPStatus401'
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
         '403':
-          $ref: '#/components/responses/HTTPStatus403'
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
         '404':
-          $ref: '#/components/responses/HTTPStatus404'
+          description: The resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
         '500':
-          $ref: '#/components/responses/HTTPStatus500'
-    delete:
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+  /v1/storage-systems/volumes:
+    get:
       tags:
-        - SnmpAlertSource
-      description: Removes snmp alert source information configured on behalf of backend devices
+        - Volumes
+      description: Lists information for all block storage volume.
+      parameters:
+        - name: limit
+          in: query
+          description: Number of query results on multiple pages
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: Start position of the pagination query
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: sortDir
+          in: query
+          description: Ascending or descending
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: sortKey
+          in: query
+          description: 'Sorting key word, such as name, createdAt'
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: The volume name
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: The volume status
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
-          content: {}
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VolumeRespSpec'
         '401':
-          $ref: '#/components/responses/HTTPStatus401'
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
         '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '404':
-          $ref: '#/components/responses/HTTPStatus404'
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
         '500':
-          $ref: '#/components/responses/HTTPStatus500'
-  '/v1/storage-systems/{storage-system-id}/snmp-alerts/{alertSequenceNum}':
-    parameters:
-      - $ref: '#/components/parameters/storage-system-id'
-      - $ref: '#/components/parameters/alertSequenceNum'
-    delete:
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+  '/v1/storage-systems/{storage-system-id}/volumes':
+    get:
       tags:
-        - SnmpClearAlert
-      description: Clear the alert for the input alert sequence number
+        - Volumes
+      description: Lists information for all block storage volume.
+      parameters:
+        - name: storage-system-id
+          in: path
+          description: The ID created for a backend .
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of query results on multiple pages
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 1
+            type: integer
+            format: int32
+        - name: offset
+          in: query
+          description: Start position of the pagination query
+          required: false
+          style: form
+          explode: true
+          schema:
+            minimum: 0
+            type: integer
+            format: int32
+        - name: sortDir
+          in: query
+          description: Ascending or descending
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: sortKey
+          in: query
+          description: 'Sorting key word, such as name, createdAt'
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: The volume name
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: poolId
+          in: query
+          description: The UUID of pool
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: The volume status
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
-          content: {}
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VolumeRespSpec'
         '401':
-          $ref: '#/components/responses/HTTPStatus401'
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
         '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '404':
-          $ref: '#/components/responses/HTTPStatus404'
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
         '500':
-          $ref: '#/components/responses/HTTPStatus500'
-externalDocs:
-  description: The offical OpenSDS Controller API specification
-  url: 'https://github.com/opensds/opensds'
-servers:
-  - url: 'https://localhost:50040/'
-  - url: 'http://localhost:50040/'
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+  '/v1/storage-systems/{storage-system-id}/volumes/{volumeId}':
+    get:
+      tags:
+        - Volumes
+      description: Gets storage volume detail by volume ID.
+      parameters:
+        - name: storage-system-id
+          in: path
+          description: The ID created for a backend .
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: volumeId
+          in: path
+          description: The UUID of the volume.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VolumeRespSpec'
+        '401':
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '404':
+          description: The resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '500':
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+  '/v1/storage-systems/{storage-system-id}/{poolId}/{volumeId}':
+    get:
+      tags:
+        - Volumes
+      description: Gets storage volume detail by poolId and volume ID.
+      parameters:
+        - name: storage-system-id
+          in: path
+          description: The ID created for a backend .
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: poolId
+          in: path
+          description: The UUID of the storage pool.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: volumeId
+          in: path
+          description: The UUID of the volume.
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VolumeRespSpec'
+        '401':
+          description: NotAuthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '404':
+          description: The resource does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
+        '500':
+          description: An unexpected error occured.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSpec'
 components:
-  parameters:
-    storage-system-id:
-      name: storage-system-id
-      in: path
-      description: The ID created for a backend .
-      required: true
-      style: simple
-      explode: false
-      schema:
-        type: string
-    alertSequenceNum:
-      name: alertSequenceNum
-      in: path
-      description: Sequence number which uniquely maps to the trap sent by a backend .
-      required: true
-      schema:
-        minimum: 0
-        type: integer
-        format: int32
-    alertsourceId:
-      name: alertsourceId
-      in: path
-      required: true
-      description: The generated Id of the snmp alert source configuration.
-      schema:
-        type: string
-    limit:
-      name: limit
-      in: query
-      description: Number of query results on multiple pages
-      schema:
-        minimum: 1
-        type: integer
-        format: int32
-    offset:
-      name: offset
-      in: query
-      description: Start position of the pagination query
-      schema:
-        minimum: 0
-        type: integer
-        format: int32
-    sortDir:
-      name: sortDir
-      in: query
-      description: Ascending or descending
-      schema:
-        type: string
-        enum:
-        - asc
-        - desc
+  schemas:
+    BaseModel:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+          example: 084bf71e-a102-11e7-88a8-e31fe6d52248
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2017-07-10T14:36:58.014Z'
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+          example: '2017-07-10T14:36:58.014Z'
+    StorageBackendRegistry:
+      required:
+        - description
+        - manufacturer
+        - model
+        - name
+        - password
+        - username
+      type: object
+      properties:
+        name:
+          type: string
+          example: EMC-VMAX-123456
+        description:
+          type: string
+          example: VMAX storage lab1
+        manufacturer:
+          type: string
+          example: EMC
+        model:
+          type: string
+          example: VMAX
+        hostName:
+          type: string
+          example: hostNAme
+        userName:
+          type: string
+          example: admin
+        password:
+          type: string
+        extendedConnectionParams:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            controller1: string
+            ip1: string
+            shhKeyPath: string
+    StorageBackendRegistryUpdate:
+      required:
+        - name
+        - password
+        - username
+      type: object
+      properties:
+        name:
+          type: string
+          example: EMC-VMAX-123456
+        description:
+          type: string
+          example: VMAX storage lab1
+        hostName:
+          type: string
+          example: hostNAme
+        userName:
+          type: string
+          example: admin
+        password:
+          type: string
+        extendedConnectionParams:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            controller1: string
+            ip1: string
+            shhKeyPath: string
+    StorageBackendResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        Name:
+          type: string
+          example: EMC-VMAX-123456
+        description:
+          type: string
+          example: VMAX storage lab1
+        manufacturer:
+          type: string
+          example: EMC
+        model:
+          type: string
+          example: VMAX
+        status:
+          type: string
+          example: Available
+        firmware:
+          type: string
+          example: v3.1
+        serialNo:
+          type: string
+          example: '12345678'
+        location:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        totalCapacity:
+          type: integer
+          format: int64
+        usedCapacity:
+          type: integer
+          format: int64
+        availbaleCapacity:
+          type: integer
+          format: int64
+    StorageBackendExtendedConnectionInfo:
+      type: object
+      properties:
+        manufacturer:
+          type: string
+          example: EMC
+        model:
+          type: string
+          example: VMAX
+        parameters:
+          type: array
+          items:
+            type: string
+            example: '["sshKeyFile","port","controllerIP"]'
+    StoragePoolSpec:
+      description: >-
+        A pool is discoveried and updated by a dock service. Each pool can be
+        regarded as a physical storage pool or a virtual storage pool. It is a
+        logical and atomic pool and can be abstracted from any storage platform.
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - required:
+            - availabilityZone
+            - dockId
+            - freeCapacity
+            - name
+            - status
+            - totalCapacity
+          type: object
+          properties:
+            name:
+              type: string
+            storageType:
+              type: string
+              enum:
+                - block
+                - file
+            description:
+              type: string
+            status:
+              type: string
+              enum:
+                - normal
+                - offline
+                - abnormal
+                - unknown
+            availabilityZone:
+              type: string
+              default: default
+            totalCapacity:
+              type: integer
+              format: int64
+            usedCapacity:
+              type: integer
+              format: int64
+            freeCapacity:
+              type: integer
+              format: int64
+            originalId:
+              type: integer
+              format: int64
+    VolumeCreateSpec:
+      required:
+        - name
+        - size
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        size:
+          type: integer
+          format: int64
+          example: 2
+        availabilityZone:
+          type: string
+          default: default
+        poolId:
+          type: string
+        snapshotId:
+          type: string
+      description: >-
+        Volume is an block device created by storage service, it can be attached
+        to physical machine or virtual machine instance.
+    VolumeRespSpec:
+      description: >-
+        Volume is an block device created by storage service, it can be attached
+        to physical machine or virtual machine instance.
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            tenantId:
+              type: string
+              readOnly: true
+            userId:
+              type: string
+              readOnly: true
+            name:
+              type: string
+            description:
+              type: string
+            status:
+              type: string
+              readOnly: true
+            totalCapacity:
+              type: integer
+              format: int64
+              example: 2
+            usedCapacity:
+              type: integer
+              format: int64
+              example: 2
+            freeCapacity:
+              type: integer
+              format: int64
+              example: 2
+            compressed:
+              type: boolean
+              example: false
+            deduplicated:
+              type: boolean
+              example: false
+            provisioningPolicy:
+              type: string
+              enum:
+                - Thick
+                - Thin
+            attached:
+              type: boolean
+              example: false
+            availabilityZone:
+              type: string
+              default: default
+            originalId:
+              type: string
+            uniqueIdentifier:
+              type: string
+            poolId:
+              type: string
+            uniqueIdentifierFormat:
+              type: string
+              enum:
+                - EUI
+                - FC_WWN
+                - iQN
+                - NAA
+                - NQN
+                - NSID
+                - UUID
+    ErrorSpec:
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      description: >-
+        Detailed HTTP error response, which consists of a HTTP status code, and
+        a custom error message unique for each failure case.
   responses:
     HTTPStatus400:
       description: BadRequest
@@ -238,217 +1274,108 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorSpec'
+    HTTPStatus409:
+      description: An item already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorSpec'
     HTTPStatus500:
       description: An unexpected error occured.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorSpec'
+  parameters:
+    storage-system-id:
+      name: storage-system-id
+      in: path
+      description: The ID created for a backend .
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    PoolId:
+      name: poolId
+      in: path
+      description: The UUID of the storage pool.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    volumeId:
+      name: volumeId
+      in: path
+      description: The UUID of the volume.
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      description: Number of query results on multiple pages
+      required: false
+      style: form
+      explode: true
+      schema:
+        minimum: 1
+        type: integer
+        format: int32
+    offset:
+      name: offset
+      in: query
+      description: Start position of the pagination query
+      required: false
+      style: form
+      explode: true
+      schema:
+        minimum: 0
+        type: integer
+        format: int32
+    sortDir:
+      name: sortDir
+      in: query
+      description: Ascending or descending
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
   requestBodies:
-    SnmpAlertSourceCreateSpec:
+    VolumeCreateSpec:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/SnmpAlertSourceCreateSpec'
-    SnmpAlertSourceUpdateSpec:
+            $ref: '#/components/schemas/VolumeCreateSpec'
+    VolumeUpdateSpec:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/SnmpAlertSourceUpdateSpec'
-  schemas:
-    BaseModel:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 084bf71e-a102-11e7-88a8-e31fe6d52248
-          readOnly: true
-        createdAt:
-          type: string
-          format: date-time
-          example: '2017-07-10T14:36:58.014Z'
-          readOnly: true
-        updatedAt:
-          type: string
-          format: date-time
-          example: '2017-07-10T14:36:58.014Z'
-          readOnly: true
-    ErrorSpec:
-      description: >-
-        Detailed HTTP error response, which consists of a HTTP status code, and
-        a custom error message unique for each failure case.
-      type: object
-      required:
-        - code
-        - message
-      properties:
-        code:
-          type: integer
-        message:
-          type: string
-    SnmpAlertSourceCreateSpec:
-      description: SNMP alert source configuration attributes.
-      required:
-        - version
-        - serverIpAddr
-      type: object
-      properties:
-        version:
-          type: string
-          description: SNMP version. Should be mandatorily set by user
-          example: SNMPV2C
-          enum:
-            - SNMPV2C
-            - SNMPV3
-        communityStr:
-          type: string
-          description: Communinity string. This should be filled if version is V2C
-        username:
-          type: string
-          description: SNMP V3 usm username. This should be filled if version is V3
-        engineId:
-          type: string
-          description: Engind ID of the device which will be sending the traps. This should be filled if version is V3
-        securityLevel:
-          type: string
-          description: Security level for the user. This should be filled if version is V3
-          example: noAuthnoPriv
-          enum:
-            - noAuthnoPriv
-            - authNoPriv
-            - authPriv
-        authProtocol:
-          type: string
-          description: Authentication protocol to be selected. This should be filled if authNoPriv or authPriv is set as securityLevel
-          example: MD5
-          enum:
-            - MD5
-            - SHA
-        authPasswd:
-          type: string
-          description: Authentication password. This should be filled if authNoPriv or authPriv is set
-        privProtocol:
-          type: string
-          description: Privacy or encryption protocol to be selected. This should be filled if authPriv is set as securityLevel
-          example: DES
-          enum:
-            - 3DES
-            - DES
-            - AES
-        privPasswd:
-          type: string
-          description: Privacy or encryption password. This should be filled if authPriv is set as securityLevel
-        serverIpAddr:
-          type: string
-          description: IP address of the server to which traps will be sent
-          pattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-          example: 8.8.8.8
-        serverPort:
-          maximum: 65535
-          minimum: 1
-          type: integer
-          description: Port number of the server to which traps will be sent. Default port is 162
-          format: int32
-          example: 162
-
-    SnmpAlertSourceUpdateSpec:
-      description: SNMP alert source configuration attributes for update.
-      type: object
-      properties:
-        engineId:
-          type: string
-          description: EngineId of device
-        securityLevel:
-          type: string
-          description: Security level
-          example: noAuthnoPriv
-          enum:
-            - noAuthnoPriv
-            - authNoPriv
-            - authPriv
-        authProtocol:
-          type: string
-          description: Authentication protocol supported
-          example: MD5
-          enum:
-            - MD5
-            - SHA
-        authPasswd:
-          type: string
-          description: Authentication password
-        privProtocol:
-          type: string
-          description: Privacy protocol supported
-          example: DES
-          enum:
-            - DES
-            - AES
-        privPasswd:
-          type: string
-          description: Privacy password
-
-    SnmpAlertSourceRespSpec:
-      description: Response for snmp alert source configuration.
-      allOf:
-        - $ref: '#/components/schemas/BaseModel'
-        - type: object
-          properties:
-            version:
-              type: string
-              description: SNMP version. Should be mandatorily set by user
-              example: SNMPV2C
-              enum:
-                - SNMPV2C
-                - SNMPV3
-            communityStr:
-              type: string
-              description: Communinity string. This should be filled ig version is V2C
-
-            username:
-              type: string
-              description: SNMP V3 usm username. This should be filled ig version is V3
-            engineId:
-              type: string
-              description: Engind ID of the device which will be sending the traps
-            securityLevel:
-              type: string
-              description: Security level for the user
-              example: noAuthnoPriv
-              enum:
-                - noAuthnoPriv
-                - authNoPriv
-                - authPriv
-            authProtocol:
-              type: string
-              description: Authentication protocol to be selected. This should be filled if authNoPriv or authPriv is set as securityLevel
-              example: MD5
-              enum:
-                - MD5
-                - SHA
-            authPasswd:
-              type: string
-              description: Authentication password. This should be filled if authNoPriv or authPriv is set
-            privProtocol:
-              type: string
-              description: Privacy or encryption protocol to be selected. This should be filled if authPriv is set as securityLevel
-              example: DES
-              enum:
-                - 3DES
-                - DES
-                - AES
-            privPasswd:
-              type: string
-              description: Privacy or encryption password. This should be filled if authPriv is set as securityLevel
-            serverIpAddr:
-              type: string
-              description: IP address of the server to which traps will be sent
-              pattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-              example: 8.8.8.8
-            serverPort:
-              maximum: 65535
-              minimum: 1
-              type: integer
-              description: Port number of the server to which traps will be sent. Default port is 162
-              format: int32
-              example: 162
-
+            type: object
+            properties:
+              name:
+                type: string
+              description:
+                type: string
+    VolumeExtendSpec:
+      content:
+        application/json:
+          schema:
+            required:
+              - newSize
+            type: object
+            properties:
+              newSize:
+                type: integer
+                format: int64
+                example: 2
+            description: >-
+              Extends the size of a volume to a requested size, in gibibytes
+              (GiB).
