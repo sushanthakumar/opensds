@@ -958,6 +958,155 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
+  '/v1/storage-systems/{storage-system-id}/snmp-alertsources':
+    parameters:
+      - $ref: '#/components/parameters/storage-system-id'
+    get:
+      tags:
+        - SnmpAlertSource
+      description: Lists snmp alert sources configured. Each entry contains community string(incase of v2c), usm user details(incase of v3) and server ip and port to configure alert source device
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/sortDir'
+        - name: sortKey
+          in: query
+          description: Sorting key word, such as communityName, createdAt
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    post:
+      tags:
+        - SnmpAlertSource
+      description: Creates snmp alert source entry. It contains community string(incase of v2c), usm user details(incase of v3) and server ip and port to configure alert source device
+      requestBody:
+        $ref: '#/components/requestBodies/SnmpAlertSourceCreateSpec'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+  '/v1/storage-systems/{storage-system-id}/snmp-alertsources/{alertsourceId}':
+    parameters:
+      - $ref: '#/components/parameters/storage-system-id'
+      - $ref: '#/components/parameters/alertsourceId'
+    get:
+      tags:
+        - SnmpAlertSource
+      description: Get details snmp alert source information configured on behalf of backend devices
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    put:
+      tags:
+        - SnmpAlertSource
+      description: Modify snmp alert source information configured on behalf of backend devices
+      operationId: putAlertSourceInfo
+      requestBody:
+        $ref: '#/components/requestBodies/SnmpAlertSourceUpdateSpec'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+    delete:
+      tags:
+        - SnmpAlertSource
+      description: Removes snmp alert source information configured on behalf of backend devices
+      responses:
+        '200':
+          description: OK
+          content: {}
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+  '/v1/storage-systems/{storage-system-id}/snmp-alerts/{alertSequenceNum}':
+    parameters:
+      - $ref: '#/components/parameters/storage-system-id'
+      - $ref: '#/components/parameters/alertSequenceNum'
+    delete:
+      tags:
+        - SnmpClearAlert
+      description: Clear the alert for the input alert sequence number
+      responses:
+        '200':
+          description: OK
+          content: {}
+        '400':
+          $ref: '#/components/responses/HTTPStatus400'
+        '401':
+          $ref: '#/components/responses/HTTPStatus401'
+        '403':
+          $ref: '#/components/responses/HTTPStatus403'
+        '404':
+          $ref: '#/components/responses/HTTPStatus404'
+        '500':
+          $ref: '#/components/responses/HTTPStatus500'
+externalDocs:
+  description: The offical OpenSDS Controller API specification
+  url: 'https://github.com/opensds/opensds'
+servers:
+  - url: 'https://localhost:50040/'
+  - url: 'http://localhost:50040/'
 components:
   schemas:
     BaseModel:
@@ -1236,6 +1385,168 @@ components:
                 - NQN
                 - NSID
                 - UUID
+    SnmpAlertSourceCreateSpec:
+      description: SNMP alert source configuration attributes.
+      required:
+        - version
+        - serverIpAddr
+      type: object
+      properties:
+        version:
+          type: string
+          description: SNMP version. Should be mandatorily set by user
+          example: SNMPV2C
+          enum:
+            - SNMPV2C
+            - SNMPV3
+        communityStr:
+          type: string
+          description: Communinity string. This should be filled if version is V2C
+        username:
+          type: string
+          description: SNMP V3 usm username. This should be filled if version is V3
+        engineId:
+          type: string
+          description: Engind ID of the device which will be sending the traps. This should be filled if version is V3
+        securityLevel:
+          type: string
+          description: Security level for the user. This should be filled if version is V3
+          example: noAuthnoPriv
+          enum:
+            - noAuthnoPriv
+            - authNoPriv
+            - authPriv
+        authProtocol:
+          type: string
+          description: Authentication protocol to be selected. This should be filled if authNoPriv or authPriv is set as securityLevel
+          example: MD5
+          enum:
+            - MD5
+            - SHA
+        authPasswd:
+          type: string
+          description: Authentication password. This should be filled if authNoPriv or authPriv is set
+        privProtocol:
+          type: string
+          description: Privacy or encryption protocol to be selected. This should be filled if authPriv is set as securityLevel
+          example: DES
+          enum:
+            - 3DES
+            - DES
+            - AES
+        privPasswd:
+          type: string
+          description: Privacy or encryption password. This should be filled if authPriv is set as securityLevel
+        serverIpAddr:
+          type: string
+          description: IP address of the server to which traps will be sent
+          pattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+          example: 8.8.8.8
+        serverPort:
+          maximum: 65535
+          minimum: 1
+          type: integer
+          description: Port number of the server to which traps will be sent. Default port is 162
+          format: int32
+          example: 162
+    SnmpAlertSourceUpdateSpec:
+      description: SNMP alert source configuration attributes for update.
+      type: object
+      properties:
+        engineId:
+          type: string
+          description: EngineId of device
+        securityLevel:
+          type: string
+          description: Security level
+          example: noAuthnoPriv
+          enum:
+            - noAuthnoPriv
+            - authNoPriv
+            - authPriv
+        authProtocol:
+          type: string
+          description: Authentication protocol supported
+          example: MD5
+          enum:
+            - MD5
+            - SHA
+        authPasswd:
+          type: string
+          description: Authentication password
+        privProtocol:
+          type: string
+          description: Privacy protocol supported
+          example: DES
+          enum:
+            - DES
+            - AES
+        privPasswd:
+          type: string
+          description: Privacy password
+    SnmpAlertSourceRespSpec:
+      description: Response for snmp alert source configuration.
+      allOf:
+        - $ref: '#/components/schemas/BaseModel'
+        - type: object
+          properties:
+            version:
+              type: string
+              description: SNMP version. Should be mandatorily set by user
+              example: SNMPV2C
+              enum:
+                - SNMPV2C
+                - SNMPV3
+            communityStr:
+              type: string
+              description: Communinity string. This should be filled ig version is V2C
+            username:
+              type: string
+              description: SNMP V3 usm username. This should be filled ig version is V3
+            engineId:
+              type: string
+              description: Engind ID of the device which will be sending the traps
+            securityLevel:
+              type: string
+              description: Security level for the user
+              example: noAuthnoPriv
+              enum:
+                - noAuthnoPriv
+                - authNoPriv
+                - authPriv
+            authProtocol:
+              type: string
+              description: Authentication protocol to be selected. This should be filled if authNoPriv or authPriv is set as securityLevel
+              example: MD5
+              enum:
+                - MD5
+                - SHA
+            authPasswd:
+              type: string
+              description: Authentication password. This should be filled if authNoPriv or authPriv is set
+            privProtocol:
+              type: string
+              description: Privacy or encryption protocol to be selected. This should be filled if authPriv is set as securityLevel
+              example: DES
+              enum:
+                - 3DES
+                - DES
+                - AES
+            privPasswd:
+              type: string
+              description: Privacy or encryption password. This should be filled if authPriv is set as securityLevel
+            serverIpAddr:
+              type: string
+              description: IP address of the server to which traps will be sent
+              pattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+              example: 8.8.8.8
+            serverPort:
+              maximum: 65535
+              minimum: 1
+              type: integer
+              description: Port number of the server to which traps will be sent. Default port is 162
+              format: int32
+              example: 162		
     ErrorSpec:
       required:
         - code
@@ -1348,6 +1659,22 @@ components:
         enum:
           - asc
           - desc
+    alertSequenceNum:
+      name: alertSequenceNum
+      in: path
+      description: Sequence number which uniquely maps to the trap sent by a backend .
+      required: true
+      schema:
+        minimum: 0
+        type: integer
+        format: int32
+    alertsourceId:
+      name: alertsourceId
+      in: path
+      required: true
+      description: The generated Id of the snmp alert source configuration.
+      schema:
+        type: string	  
   requestBodies:
     VolumeCreateSpec:
       content:
@@ -1379,3 +1706,13 @@ components:
             description: >-
               Extends the size of a volume to a requested size, in gibibytes
               (GiB).
+    SnmpAlertSourceCreateSpec:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SnmpAlertSourceCreateSpec'
+    SnmpAlertSourceUpdateSpec:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SnmpAlertSourceUpdateSpec'	      
