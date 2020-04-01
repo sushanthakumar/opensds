@@ -137,27 +137,6 @@ paths:
     parameters:
       - $ref: '#/components/parameters/storage-system-id'
       - $ref: '#/components/parameters/alertSequenceNum'
-    get:
-      tags:
-        - SnmpClearAlert
-      description: Clear the alert for the input alert sequence number
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SnmpCommunityRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '404':
-          $ref: '#/components/responses/HTTPStatus404'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
     delete:
       tags:
         - SnmpClearAlert
