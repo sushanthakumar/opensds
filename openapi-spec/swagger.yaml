@@ -958,7 +958,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/alert-sources':
+  '/v1/storage-systems/{storage-system-id}/alertsources':
     parameters:
       - $ref: '#/components/parameters/storage-system-id'
     post:
@@ -982,7 +982,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus403'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1/storage-systems/{storage-system-id}/alert-sources/{alertsourceId}':
+  '/v1/storage-systems/{storage-system-id}/alertsources/{alertsourceId}':
     parameters:
       - $ref: '#/components/parameters/storage-system-id'
       - $ref: '#/components/parameters/alertsourceId'
@@ -1055,7 +1055,7 @@ paths:
       - $ref: '#/components/parameters/alertSequenceNum'
     delete:
       tags:
-        - ClearAlert
+        - Alert
       description: Clear the alert for the input alert sequence number
       responses:
         '200':
