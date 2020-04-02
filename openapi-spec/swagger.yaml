@@ -18,7 +18,7 @@ tags:
   - name: Admins
     description: Secured Admin-only calls
 paths:
-  /v1/storage-systems:
+  /v1/storages:
     get:
       tags:
         - Admins
@@ -157,14 +157,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}':
+  '/v1/storages/{storageId}':
     get:
       tags:
         - Admins
       description: get details of a registerd backend
       operationId: getStorageBackendbyID
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -242,7 +242,7 @@ paths:
       description: update details of a storage system registry
       operationId: updateStorageBackendbyID
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -291,7 +291,7 @@ paths:
         - Admins
       description: un regester an already registered storage backend
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -320,7 +320,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  /v1/storage-systems/connection-parameters:
+  /v1/storages/connection-parameters:
     get:
       tags:
         - Admins
@@ -407,10 +407,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  /v1/storage-systems/pools:
+  /v1/storages/pools:
     get:
       tags:
-        - Pool
+        - Pools
       description: Lists information for all block storage pool.
       parameters:
         - name: limit
@@ -468,6 +468,14 @@ paths:
           explode: true
           schema:
             type: string
+        - name: storageSystemId
+          in: query
+          description: The UUID of device
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string    
         - name: status
           in: query
           description: The pool status
@@ -476,6 +484,11 @@ paths:
           explode: true
           schema:
             type: string
+            enum:
+              - Normal
+              - Offline
+              - Abnormal
+              - Unknown
       responses:
         '200':
           description: OK
@@ -503,13 +516,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/pools':
+  '/v1/storages/{storageId}/pools':
     get:
       tags:
-        - Pool
+        - Pools
       description: Lists information for all pools of storagebackend.
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -599,13 +612,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/pools/{poolId}':
+  '/v1/storages/{storageId}/pools/{poolId}':
     get:
       tags:
-        - Pool
+        - Pools
       description: Gets storage pool detail by pool ID.
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -652,7 +665,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  /v1/storage-systems/volumes:
+  /v1/storages/volumes:
     get:
       tags:
         - Volumes
@@ -740,13 +753,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/volumes':
+  '/v1/storages/{storageId}/volumes':
     get:
       tags:
         - Volumes
       description: Lists information for all block storage volume.
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -844,13 +857,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/volumes/{volumeId}':
+  '/v1/storages/{storageId}/volumes/{volumeId}':
     get:
       tags:
         - Volumes
       description: Gets storage volume detail by volume ID.
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -897,70 +910,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/{poolId}/{volumeId}':
-    get:
-      tags:
-        - Volumes
-      description: Gets storage volume detail by poolId and volume ID.
-      parameters:
-        - name: storage-system-id
-          in: path
-          description: The ID created for a backend .
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-        - name: poolId
-          in: path
-          description: The UUID of the storage pool.
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-        - name: volumeId
-          in: path
-          description: The UUID of the volume.
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VolumeRespSpec'
-        '401':
-          description: NotAuthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorSpec'
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorSpec'
-        '404':
-          description: The resource does not exist
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorSpec'
-        '500':
-          description: An unexpected error occured.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/alertsources':
+  
+  '/v1/storages/{storageId}/alertsources':
     parameters:
-      - $ref: '#/components/parameters/storage-system-id'
+      - $ref: '#/components/parameters/storageId'
     post:
       tags:
         - AlertSource
@@ -982,9 +935,9 @@ paths:
           $ref: '#/components/responses/HTTPStatus403'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1/storage-systems/{storage-system-id}/alertsources/{alertsourceId}':
+  '/v1/storages/{storageId}/alertsources/{alertsourceId}':
     parameters:
-      - $ref: '#/components/parameters/storage-system-id'
+      - $ref: '#/components/parameters/storageId'
       - $ref: '#/components/parameters/alertsourceId'
     get:
       tags:
@@ -1049,9 +1002,9 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1/storage-systems/{storage-system-id}/alerts/{alertSequenceNum}':
+  '/v1/storages/{storageId}/alerts/{alertSequenceNum}':
     parameters:
-      - $ref: '#/components/parameters/storage-system-id'
+      - $ref: '#/components/parameters/storageId'
       - $ref: '#/components/parameters/alertSequenceNum'
     delete:
       tags:
@@ -1220,12 +1173,8 @@ components:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - required:
-            - availabilityZone
-            - dockId
-            - freeCapacity
-            - name
-            - status
-            - totalCapacity
+          - name
+          - id
           type: object
           properties:
             name:
@@ -1259,30 +1208,6 @@ components:
             originalId:
               type: integer
               format: int64
-    VolumeCreateSpec:
-      required:
-        - name
-        - size
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        size:
-          type: integer
-          format: int64
-          example: 2
-        availabilityZone:
-          type: string
-          default: default
-        poolId:
-          type: string
-        snapshotId:
-          type: string
-      description: >-
-        Volume is an block device created by storage service, it can be attached
-        to physical machine or virtual machine instance.
     VolumeRespSpec:
       description: >-
         Volume is an block device created by storage service, it can be attached
@@ -1291,19 +1216,21 @@ components:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
           properties:
-            tenantId:
-              type: string
-              readOnly: true
-            userId:
-              type: string
-              readOnly: true
             name:
               type: string
             description:
               type: string
             status:
               type: string
-              readOnly: true
+              enum:
+                - Creating
+                - Available
+                - Extending
+                - ErrorExtending
+                - Deleting 
+                - ErrorDeleting 
+                - Error
+
             totalCapacity:
               type: integer
               format: int64
@@ -1562,8 +1489,8 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorSpec'
   parameters:
-    storage-system-id:
-      name: storage-system-id
+    storageId:
+      name: storageId
       in: path
       description: The ID created for a backend .
       required: true
@@ -1638,38 +1565,8 @@ components:
       required: true
       description: The generated Id of the snmp alert source configuration.
       schema:
-        type: string	  
+        type: string    
   requestBodies:
-    VolumeCreateSpec:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/VolumeCreateSpec'
-    VolumeUpdateSpec:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-              description:
-                type: string
-    VolumeExtendSpec:
-      content:
-        application/json:
-          schema:
-            required:
-              - newSize
-            type: object
-            properties:
-              newSize:
-                type: integer
-                format: int64
-                example: 2
-            description: >-
-              Extends the size of a volume to a requested size, in gibibytes
-              (GiB).
     AlertSourceCreateSpec:
       content:
         application/json:
