@@ -15,14 +15,13 @@ servers:
   - url: 'https://virtserver.swaggerhub.com/NajmudheenCT/IRM/1.0.0'
     description: SwaggerHub API Auto Mocking
 tags:
-  - name: Admins
-    description: Secured Admin-only calls
+  - name: Storages
 paths:
-  /v1/storage-systems:
+  /v1/storages:
     get:
       tags:
-        - Admins
-      description: get details of all registered storage backends
+        - Storages
+      description: Get details of all registered storage backends
       operationId: getStorageBackends
       parameters:
         - name: limit
@@ -80,6 +79,27 @@ paths:
           explode: true
           schema:
             type: string
+        - name: name
+          in: query
+          description: The storage name
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string    
+        - name: status
+          in: query
+          description: The storage status
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            enum:
+              - Normal
+              - Offline
+              - Abnormal
+              - Unknown    
       responses:
         '200':
           description: Storage backend list available
@@ -109,10 +129,9 @@ paths:
                 $ref: '#/components/schemas/ErrorSpec'
     post:
       tags:
-        - Admins
+        - Storages
       description: >-
-        It is fot registering storage backend. Adds storage Backend to the
-        Ifrasturcture Manager
+        Add storage backend
       operationId: addStorageBackends
       requestBody:
         description: Inventory item to add
@@ -157,58 +176,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}':
+  '/v1/storages/{storageId}':
     get:
       tags:
-        - Admins
-      description: get details of a registerd backend
+        - Storages
+      description: Get details of a registered backend
       operationId: getStorageBackendbyID
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
           style: simple
           explode: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Number of query results on multiple pages
-          required: false
-          style: form
-          explode: true
-          schema:
-            minimum: 1
-            type: integer
-            format: int32
-        - name: offset
-          in: query
-          description: Start position of the pagination query
-          required: false
-          style: form
-          explode: true
-          schema:
-            minimum: 0
-            type: integer
-            format: int32
-        - name: sortDir
-          in: query
-          description: Ascending or descending
-          required: false
-          style: form
-          explode: true
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-        - name: sortKey
-          in: query
-          description: 'Sorting key word, such as name, createdAt'
-          required: false
-          style: form
-          explode: true
           schema:
             type: string
       responses:
@@ -238,11 +218,11 @@ paths:
                 $ref: '#/components/schemas/ErrorSpec'
     put:
       tags:
-        - Admins
-      description: update details of a storage system registry
+        - Storages
+      description: Update details of a storage system registry
       operationId: updateStorageBackendbyID
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -288,10 +268,10 @@ paths:
                 $ref: '#/components/schemas/ErrorSpec'
     delete:
       tags:
-        - Admins
-      description: un regester an already registered storage backend
+        - Storages
+      description: Unregister  an already registered storage backend
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -320,52 +300,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  /v1/storage-systems/connection-parameters:
+  /v1/storages/conn-params:
     get:
       tags:
-        - Admins
-      description: get key names of extended parameters required for registering a backend
+        - Storages
+      description: Get key names of extended parameters required for registering a backend
       operationId: getStorageBackendConnectionParams
       parameters:
-        - name: limit
-          in: query
-          description: Number of query results on multiple pages
-          required: false
-          style: form
-          explode: true
-          schema:
-            minimum: 1
-            type: integer
-            format: int32
-        - name: offset
-          in: query
-          description: Start position of the pagination query
-          required: false
-          style: form
-          explode: true
-          schema:
-            minimum: 0
-            type: integer
-            format: int32
-        - name: sortDir
-          in: query
-          description: Ascending or descending
-          required: false
-          style: form
-          explode: true
-          schema:
-            type: string
-            enum:
-              - asc
-              - desc
-        - name: sortKey
-          in: query
-          description: 'Sorting key word, such as name, createdAt'
-          required: false
-          style: form
-          explode: true
-          schema:
-            type: string
         - name: vendor
           in: query
           description: vendor name to filter
@@ -388,7 +329,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StorageBackendExtendedConnectionInfo'
+                type: array
+                items:
+                 $ref: '#/components/schemas/StorageBackendExtendedConnectionInfo'
         '401':
           description: NotAuthorized
           content:
@@ -407,11 +350,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  /v1/storage-systems/pools:
+  /v1/storages/pools:
     get:
       tags:
-        - Pool
-      description: Lists information for all block storage pool.
+        - Pools
+      description: Lists information for all storage pools.
       parameters:
         - name: limit
           in: query
@@ -468,6 +411,14 @@ paths:
           explode: true
           schema:
             type: string
+        - name: storageId
+          in: query
+          description: The UUID of device
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string    
         - name: status
           in: query
           description: The pool status
@@ -476,6 +427,11 @@ paths:
           explode: true
           schema:
             type: string
+            enum:
+              - Normal
+              - Offline
+              - Abnormal
+              - Unknown
       responses:
         '200':
           description: OK
@@ -503,13 +459,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/pools':
+  '/v1/storages/{storageId}/pools':
     get:
       tags:
-        - Pool
+        - Pools
       description: Lists information for all pools of storagebackend.
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -599,13 +555,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/pools/{poolId}':
+  '/v1/storages/{storageId}/pools/{poolId}':
     get:
       tags:
-        - Pool
+        - Pools
       description: Gets storage pool detail by pool ID.
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -652,11 +608,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  /v1/storage-systems/volumes:
+  /v1/storages/volumes:
     get:
       tags:
         - Volumes
-      description: Lists information for all block storage volume.
+      description: Lists information for all storage volume.
       parameters:
         - name: limit
           in: query
@@ -705,6 +661,22 @@ paths:
           explode: true
           schema:
             type: string
+        - name: poolId
+          in: query
+          description: The UUID of pool
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+        - name: storageId
+          in: query
+          description: The UUID of device
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string    
         - name: status
           in: query
           description: The volume status
@@ -713,6 +685,14 @@ paths:
           explode: true
           schema:
             type: string
+            enum:
+                - Creating
+                - Available
+                - Extending
+                - ErrorExtending
+                - Deleting 
+                - ErrorDeleting 
+                - Error
       responses:
         '200':
           description: OK
@@ -740,13 +720,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/volumes':
+  '/v1/storages/{storageId}/volumes':
     get:
       tags:
         - Volumes
-      description: Lists information for all block storage volume.
+      description: Lists information for all storage volume.
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -844,13 +824,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/volumes/{volumeId}':
+  '/v1/storages/{storageId}/volumes/{volumeId}':
     get:
       tags:
         - Volumes
       description: Gets storage volume detail by volume ID.
       parameters:
-        - name: storage-system-id
+        - name: storageId
           in: path
           description: The ID created for a backend .
           required: true
@@ -897,113 +877,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/{poolId}/{volumeId}':
-    get:
-      tags:
-        - Volumes
-      description: Gets storage volume detail by poolId and volume ID.
-      parameters:
-        - name: storage-system-id
-          in: path
-          description: The ID created for a backend .
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-        - name: poolId
-          in: path
-          description: The UUID of the storage pool.
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-        - name: volumeId
-          in: path
-          description: The UUID of the volume.
-          required: true
-          style: simple
-          explode: false
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/VolumeRespSpec'
-        '401':
-          description: NotAuthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorSpec'
-        '403':
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorSpec'
-        '404':
-          description: The resource does not exist
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorSpec'
-        '500':
-          description: An unexpected error occured.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorSpec'
-  '/v1/storage-systems/{storage-system-id}/snmp-alertsources':
+  
+  '/v1/storages/{storageId}/alert-sources':
     parameters:
-      - $ref: '#/components/parameters/storage-system-id'
-    get:
-      tags:
-        - SnmpAlertSource
-      description: Lists snmp alert sources configured. Each entry contains community string(incase of v2c), usm user details(incase of v3) and server ip and port to configure alert source device
-      parameters:
-        - $ref: '#/components/parameters/limit'
-        - $ref: '#/components/parameters/offset'
-        - $ref: '#/components/parameters/sortDir'
-        - name: sortKey
-          in: query
-          description: Sorting key word, such as communityName, createdAt
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
-        '400':
-          $ref: '#/components/responses/HTTPStatus400'
-        '401':
-          $ref: '#/components/responses/HTTPStatus401'
-        '403':
-          $ref: '#/components/responses/HTTPStatus403'
-        '500':
-          $ref: '#/components/responses/HTTPStatus500'
+      - $ref: '#/components/parameters/storageId'
     post:
       tags:
-        - SnmpAlertSource
+        - AlertSources
       description: Creates snmp alert source entry. It contains community string(incase of v2c), usm user details(incase of v3) and server ip and port to configure alert source device
       requestBody:
-        $ref: '#/components/requestBodies/SnmpAlertSourceCreateSpec'
+        $ref: '#/components/requestBodies/AlertSourceCreateSpec'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
+                $ref: '#/components/schemas/AlertSourceRespSpec'
         '400':
           $ref: '#/components/responses/HTTPStatus400'
         '401':
@@ -1012,13 +902,13 @@ paths:
           $ref: '#/components/responses/HTTPStatus403'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1/storage-systems/{storage-system-id}/snmp-alertsources/{alertsourceId}':
+  '/v1/storages/{storageId}/alert-sources/{alertSourceId}':
     parameters:
-      - $ref: '#/components/parameters/storage-system-id'
-      - $ref: '#/components/parameters/alertsourceId'
+      - $ref: '#/components/parameters/storageId'
+      - $ref: '#/components/parameters/alertSourceId'
     get:
       tags:
-        - SnmpAlertSource
+        - AlertSources
       description: Get details snmp alert source information configured on behalf of backend devices
       responses:
         '200':
@@ -1026,7 +916,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
+                $ref: '#/components/schemas/AlertSourceRespSpec'
         '400':
           $ref: '#/components/responses/HTTPStatus400'
         '401':
@@ -1039,18 +929,18 @@ paths:
           $ref: '#/components/responses/HTTPStatus500'
     put:
       tags:
-        - SnmpAlertSource
+        - AlertSources
       description: Modify snmp alert source information configured on behalf of backend devices
       operationId: putAlertSourceInfo
       requestBody:
-        $ref: '#/components/requestBodies/SnmpAlertSourceUpdateSpec'
+        $ref: '#/components/requestBodies/AlertSourceUpdateSpec'
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SnmpAlertSourceRespSpec'
+                $ref: '#/components/schemas/AlertSourceRespSpec'
         '400':
           $ref: '#/components/responses/HTTPStatus400'
         '401':
@@ -1063,7 +953,7 @@ paths:
           $ref: '#/components/responses/HTTPStatus500'
     delete:
       tags:
-        - SnmpAlertSource
+        - AlertSources
       description: Removes snmp alert source information configured on behalf of backend devices
       responses:
         '200':
@@ -1079,13 +969,13 @@ paths:
           $ref: '#/components/responses/HTTPStatus404'
         '500':
           $ref: '#/components/responses/HTTPStatus500'
-  '/v1/storage-systems/{storage-system-id}/snmp-alerts/{alertSequenceNum}':
+  '/v1/storages/{storageId}/alerts/{alertSequenceNum}':
     parameters:
-      - $ref: '#/components/parameters/storage-system-id'
+      - $ref: '#/components/parameters/storageId'
       - $ref: '#/components/parameters/alertSequenceNum'
     delete:
       tags:
-        - SnmpClearAlert
+        - Alerts
       description: Clear the alert for the input alert sequence number
       responses:
         '200':
@@ -1122,7 +1012,6 @@ components:
           example: '2017-07-10T14:36:58.014Z'
     StorageBackendRegistry:
       required:
-        - description
         - manufacturer
         - model
         - name
@@ -1150,14 +1039,14 @@ components:
           example: admin
         password:
           type: string
-        extendedConnectionParams:
+        extendedConnParams:
           type: object
           additionalProperties:
             type: string
           example:
             controller1: string
             ip1: string
-            shhKeyPath: string
+            sshKeyPath: string
     StorageBackendRegistryUpdate:
       required:
         - name
@@ -1179,7 +1068,7 @@ components:
           example: admin
         password:
           type: string
-        extendedConnectionParams:
+        extendedConnParams:
           type: object
           additionalProperties:
             type: string
@@ -1192,7 +1081,7 @@ components:
       properties:
         id:
           type: string
-        Name:
+        name:
           type: string
           example: EMC-VMAX-123456
         description:
@@ -1250,12 +1139,8 @@ components:
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - required:
-            - availabilityZone
-            - dockId
-            - freeCapacity
-            - name
-            - status
-            - totalCapacity
+          - name
+          - id
           type: object
           properties:
             name:
@@ -1289,51 +1174,29 @@ components:
             originalId:
               type: integer
               format: int64
-    VolumeCreateSpec:
-      required:
-        - name
-        - size
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        size:
-          type: integer
-          format: int64
-          example: 2
-        availabilityZone:
-          type: string
-          default: default
-        poolId:
-          type: string
-        snapshotId:
-          type: string
-      description: >-
-        Volume is an block device created by storage service, it can be attached
-        to physical machine or virtual machine instance.
     VolumeRespSpec:
       description: >-
-        Volume is an block device created by storage service, it can be attached
+        Volume is an device created by storage service, it can be attached
         to physical machine or virtual machine instance.
       allOf:
         - $ref: '#/components/schemas/BaseModel'
         - type: object
           properties:
-            tenantId:
-              type: string
-              readOnly: true
-            userId:
-              type: string
-              readOnly: true
             name:
               type: string
             description:
               type: string
             status:
               type: string
-              readOnly: true
+              enum:
+                - Creating
+                - Available
+                - Extending
+                - ErrorExtending
+                - Deleting 
+                - ErrorDeleting 
+                - Error
+
             totalCapacity:
               type: integer
               format: int64
@@ -1379,7 +1242,7 @@ components:
                 - NQN
                 - NSID
                 - UUID
-    SnmpAlertSourceCreateSpec:
+    AlertSourceCreateSpec:
       description: SNMP alert source configuration attributes.
       required:
         - version
@@ -1443,7 +1306,7 @@ components:
           description: Port number of the server to which traps will be sent. Default port is 162
           format: int32
           example: 162
-    SnmpAlertSourceUpdateSpec:
+    AlertSourceUpdateSpec:
       description: SNMP alert source configuration attributes for update.
       type: object
       properties:
@@ -1478,7 +1341,7 @@ components:
         privPasswd:
           type: string
           description: Privacy password
-    SnmpAlertSourceRespSpec:
+    AlertSourceRespSpec:
       description: Response for snmp alert source configuration.
       allOf:
         - $ref: '#/components/schemas/BaseModel'
@@ -1540,7 +1403,7 @@ components:
               type: integer
               description: Port number of the server to which traps will be sent. Default port is 162
               format: int32
-              example: 162		
+              example: 162    
     ErrorSpec:
       required:
         - code
@@ -1592,8 +1455,8 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorSpec'
   parameters:
-    storage-system-id:
-      name: storage-system-id
+    storageId:
+      name: storageId
       in: path
       description: The ID created for a backend .
       required: true
@@ -1662,51 +1525,21 @@ components:
         minimum: 0
         type: integer
         format: int32
-    alertsourceId:
-      name: alertsourceId
+    alertSourceId:
+      name: alertSourceId
       in: path
       required: true
       description: The generated Id of the snmp alert source configuration.
       schema:
-        type: string	  
+        type: string    
   requestBodies:
-    VolumeCreateSpec:
+    AlertSourceCreateSpec:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/VolumeCreateSpec'
-    VolumeUpdateSpec:
+            $ref: '#/components/schemas/AlertSourceCreateSpec'
+    AlertSourceUpdateSpec:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              name:
-                type: string
-              description:
-                type: string
-    VolumeExtendSpec:
-      content:
-        application/json:
-          schema:
-            required:
-              - newSize
-            type: object
-            properties:
-              newSize:
-                type: integer
-                format: int64
-                example: 2
-            description: >-
-              Extends the size of a volume to a requested size, in gibibytes
-              (GiB).
-    SnmpAlertSourceCreateSpec:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SnmpAlertSourceCreateSpec'
-    SnmpAlertSourceUpdateSpec:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/SnmpAlertSourceUpdateSpec'	      
+            $ref: '#/components/schemas/AlertSourceUpdateSpec'
